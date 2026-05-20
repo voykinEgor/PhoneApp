@@ -11,37 +11,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.phoneapp.domain.Contact
+import com.example.phoneapp.domain.ContactList
+import com.example.phoneapp.presentation.ContactListContent
 import com.example.phoneapp.ui.theme.PhoneAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val listContacts = ContactList(listOf(Contact("Иван Иванов", "89536417453"), Contact("Иван Иванов", "89536417454")))
         setContent {
             PhoneAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    ContactListContent(listContacts, Modifier.padding(innerPadding))
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PhoneAppTheme {
-        Greeting("Android")
     }
 }
