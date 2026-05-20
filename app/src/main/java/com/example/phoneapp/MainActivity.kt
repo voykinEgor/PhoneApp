@@ -7,24 +7,39 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.phoneapp.domain.Contact
-import com.example.phoneapp.domain.ContactList
-import com.example.phoneapp.presentation.ContactListContent
+import androidx.lifecycle.ViewModelProvider
+import com.example.phoneapp.presentation.ContactListScreen
+import com.example.phoneapp.presentation.ContactsViewModel
+import com.example.phoneapp.presentation.ViewModelFactory
 import com.example.phoneapp.ui.theme.PhoneAppTheme
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
+
+    val component by lazy {
+        (this.application as ContactApp).appComponent
+    }
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    val contactsViewModel by lazy{
+        ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class]
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val listContacts = ContactList(listOf(Contact("Иван Иванов", "89536417453"), Contact("Иван Иванов", "89536417454")))
+        component.inject(this)
+
+
         setContent {
             PhoneAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ContactListContent(listContacts, Modifier.padding(innerPadding))
+                    ContactListScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        contactsViewModel = contactsViewModel
+                    )
                 }
             }
         }

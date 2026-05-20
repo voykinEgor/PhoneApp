@@ -39,11 +39,6 @@ fun ContactListContent(
 ) {
     val contacts = contactList.contactsList
 
-    if (contacts.isEmpty()) {
-        EmptyContactsState()
-        return
-    }
-
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -145,32 +140,6 @@ private fun ContactAvatar(name: String) {
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
-    }
-}
-
-@Composable
-private fun EmptyContactsState() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "No contacts",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Saved contacts will appear here",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
     }
 }
 

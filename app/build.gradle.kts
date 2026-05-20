@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp") version "2.2.20-2.0.2"
 }
 
 android {
@@ -55,4 +56,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+
+    implementation (libs.dagger)
+    ksp(libs.dagger.compiler)
+    implementation (libs.dagger.android)
+    implementation (libs.dagger.android.support)
+    ksp (libs.dagger.android.processor)
 }
