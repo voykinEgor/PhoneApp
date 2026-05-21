@@ -2,6 +2,7 @@ package com.example.phoneapp.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import com.example.phoneapp.domain.Contact
 import com.example.phoneapp.domain.ContactList
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 fun ContactListContent(
     contactList: ContactList,
     modifier: Modifier = Modifier,
@@ -40,6 +42,9 @@ fun ContactListContent(
     onContactClick: (Contact) -> Unit = {}
 ) {
     val contacts = contactList.contactsList
+    val groupedContacts = contacts
+        .sortedBy { contact -> contact.name.lowercase() }
+        .groupBy { contact -> contact.name.alphabetSection() }
 
     Box(
         modifier = modifier
@@ -66,14 +71,20 @@ fun ContactListContent(
                 Spacer(modifier = Modifier.height(6.dp))
             }
 
-            items(
-                items = contacts,
-                key = { contact -> "${contact.name}_${contact.phoneNumber}" }
-            ) { contact ->
-                ContactListItem(
-                    contact = contact,
-                    onClick = { onContactClick(contact) }
-                )
+            groupedContacts.forEach { (section, sectionContacts) ->
+                stickyHeader(key = section) {
+                    ContactSectionHeader(section = section)
+                }
+
+                items(
+                    items = sectionContacts,
+                    key = { contact -> "${contact.id}_${contact.phoneNumber}" }
+                ) { contact ->
+                    ContactListItem(
+                        contact = contact,
+                        onClick = { onContactClick(contact) }
+                    )
+                }
             }
         }
 
@@ -89,6 +100,23 @@ fun ContactListContent(
                 Text(text = "Delete duplicate contacts")
             }
         }
+    }
+}
+
+@Composable
+private fun ContactSectionHeader(section: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(top = 8.dp, bottom = 4.dp)
+    ) {
+        Text(
+            text = section,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
@@ -168,4 +196,12 @@ private fun String.initials(): String {
         .take(2)
         .joinToString("") { word -> word.first().uppercaseChar().toString() }
         .ifBlank { "?" }
+}
+
+private fun String.alphabetSection(): String {
+    val firstLetter = trim()
+        .firstOrNull { char -> char.isLetter() }
+        ?.uppercaseChar()
+
+    return firstLetter?.toString() ?: "#"
 }
