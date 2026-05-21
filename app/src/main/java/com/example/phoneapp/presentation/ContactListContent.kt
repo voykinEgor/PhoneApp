@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -35,41 +36,58 @@ import com.example.phoneapp.domain.ContactList
 fun ContactListContent(
     contactList: ContactList,
     modifier: Modifier = Modifier,
+    onDeleteDuplicatesClick: () -> Unit = {},
     onContactClick: (Contact) -> Unit = {}
 ) {
     val contacts = contactList.contactsList
 
-    LazyColumn(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        item {
-            Text(
-                text = "Contacts",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text = "${contacts.size} saved contacts",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(6.dp))
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            item {
+                Text(
+                    text = "Contacts",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = "${contacts.size} saved contacts",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+            }
+
+            items(
+                items = contacts,
+                key = { contact -> "${contact.name}_${contact.phoneNumber}" }
+            ) { contact ->
+                ContactListItem(
+                    contact = contact,
+                    onClick = { onContactClick(contact) }
+                )
+            }
         }
 
-        items(
-            items = contacts,
-            key = { contact -> "${contact.name}_${contact.phoneNumber}" }
-        ) { contact ->
-            ContactListItem(
-                contact = contact,
-                onClick = { onContactClick(contact) }
-            )
+        Button(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth(0.6f)
+                .height(64.dp)
+                .padding(bottom = 12.dp),
+            onClick = onDeleteDuplicatesClick
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Delete duplicate contacts")
+            }
         }
     }
 }

@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+
 
     <application
         android:allowBackup="true"
@@ -14,6 +17,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PhoneApp">
+
+        <service
+            android:name=".service.DuplicateContactsService"
+            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

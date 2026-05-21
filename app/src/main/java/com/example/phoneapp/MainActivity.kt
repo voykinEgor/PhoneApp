@@ -13,6 +13,7 @@ import com.example.phoneapp.presentation.ContactListScreen
 import com.example.phoneapp.presentation.ContactsViewModel
 import com.example.phoneapp.presentation.ViewModelFactory
 import com.example.phoneapp.ui.theme.PhoneAppTheme
+import java.util.Locale
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +27,6 @@ class MainActivity : ComponentActivity() {
     val contactsViewModel by lazy{
         ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class]
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
