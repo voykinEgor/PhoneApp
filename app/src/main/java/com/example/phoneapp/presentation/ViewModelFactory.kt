@@ -11,6 +11,13 @@ class ViewModelFactory @Inject constructor(
 ): ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return viewModelProviders[modelClass]?.get() as T
+        val provider = viewModelProviders[modelClass]
+            ?: viewModelProviders.entries.firstOrNull { (viewModelClass, _) ->
+                modelClass.isAssignableFrom(viewModelClass)
+            }?.value
+            ?: throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+
+        @Suppress("UNCHECKED_CAST")
+        return provider.get() as T
     }
 }

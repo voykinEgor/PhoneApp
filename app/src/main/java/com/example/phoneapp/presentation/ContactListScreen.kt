@@ -1,8 +1,9 @@
 package com.example.phoneapp.presentation
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.widget.Toast
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -64,17 +65,28 @@ fun ContactListScreen(
             LoadingContactsContent()
         }
         is ContactListState.Content -> {
-            ContactListContent(
-                modifier = modifier,
-                contactList = (stateListContacts as ContactListState.Content).contactsList,
-                onContactClick = {
+            val contactList = (stateListContacts as ContactListState.Content).contactsList
 
-                },
-            )
+            if (contactList.contactsList.isEmpty()) {
+                EmptyContactsContent()
+            } else {
+                ContactListContent(
+                    modifier = modifier,
+                    contactList = contactList,
+                    onContactClick = { contact ->
+                        val dialIntent = Intent(
+                            Intent.ACTION_DIAL,
+                            Uri.parse("tel:${Uri.encode(contact.phoneNumber)}")
+                        )
+                        context.startActivity(dialIntent)
+                    },
+                )
+            }
         }
         is ContactListState.Error -> {
-            EmptyContactsContent()
-            Toast.makeText(context, (stateListContacts as ContactListState.Error).errorMessage, Toast.LENGTH_SHORT).show()
+            ErrorContactsContent(
+                message = (stateListContacts as ContactListState.Error).errorMessage
+            )
         }
     }
 }
@@ -114,6 +126,32 @@ private fun EmptyContactsContent() {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Saved contacts will appear here",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorContactsContent(message: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "Something went wrong",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = message,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

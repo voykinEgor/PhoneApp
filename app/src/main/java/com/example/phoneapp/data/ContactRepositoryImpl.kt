@@ -87,14 +87,9 @@ class ContactRepositoryImpl @Inject constructor(
             .sortedBy { it.displayName.orEmpty() }
             .map(contactMapper::mapContactDtoToDomain)
 
-        if(contacts.isEmpty()){
-            emit(ContactListState.Error("Contacts list is empty"))
-            return@flow
-        }
-
         emit(ContactListState.Content(ContactList(contacts)))
-    }.catch {
-        emit(ContactListState.Error("Error receiving contacts"))
+    }.catch { error ->
+        emit(ContactListState.Error(error.message ?: "Error receiving contacts"))
     }.flowOn(Dispatchers.IO)
 }
 
