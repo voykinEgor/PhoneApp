@@ -24,7 +24,8 @@ fun main() {
     val staffEmployee = staff.map { item ->
         Employee(
             item[0],
-            item[1].toInt()
+            item[1].toIntOrNull()
+                ?: throw IllegalArgumentException("${item[1]} is not a valid number")
         )
     }.toTypedArray()
 
