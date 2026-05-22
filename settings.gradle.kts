@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PhoneApp"
 include(":app")
- 
+include(":algorithm")
